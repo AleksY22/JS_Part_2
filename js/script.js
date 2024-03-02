@@ -1,154 +1,186 @@
 'use strict';
-/* Задания на урок:
-1) Удалить все рекламные блоки со страницы (правая часть сайта)
 
-2) Изменить жанр фильма, поменять "комедия" на "драма"
+document.addEventListener('DOMContentLoaded', () => {
+   const movieDB = {
+      movies: [
+         'Логан',
+         'Лига справедливости',
+         'Ла-ла лэнд',
+         'Одержимость',
+         'Скотт Пилигрим против...'
+      ]
+   };
 
-3) Изменить задний фон постера с фильмом на изображение "bg.jpg". Оно лежит в папке img.
-
-Реализовать только при помощи JS
-
-4) Список фильмов на странице сформировать на основании данных из этого JS файла.
-
-Отсортировать их по алфавиту
-
-5) Добавить нумерацию выведенных фильмов
-
-*/
-
-
-/*
-const movieDB = {
-   movies: [
-      'Логан',
-      'Лига справедливости',
-      'Ла-ла лэнд',
-      'Одержимость',
-      'Скотт Пилигрим против...'
-   ]
-};
-
-const promoAdv = document.querySelectorAll('.promo__adv img');
-const promoBg = document.querySelector('.promo__bg');
-const promoGenre = promoBg.querySelector('.promo__genre');
-const moviesList = document.querySelector('.promo__interactive-list');
+   const promoAdv = document.querySelectorAll('.promo__adv img');
+   const promoBg = document.querySelector('.promo__bg');
+   const promoGenre = promoBg.querySelector('.promo__genre');
+   const moviesList = document.querySelector('.promo__interactive-list');
 
 
-promoAdv.forEach(item => {
-   item.remove();
-});
+   const deleteAdv = (arg) => {
+      arg.forEach(item => {
+         item.remove();
+      });
+   };
 
-promoGenre.textContent = 'драма';
+   const makeChanges = () => {
+      promoGenre.textContent = 'драма';
+      promoBg.style.backgroundImage = 'url("../img/bg.jpg")';
+   };
 
-promoBg.style.backgroundImage = 'url("../img/bg.jpg")';
+   const sortArr = (arr) => {
+      arr.sort();
+   };
 
-moviesList.innerHTML = '';
+   deleteAdv(promoAdv);
+   makeChanges();
 
-movieDB.movies.sort();
 
-movieDB.movies.forEach((item, iter) => {
-   moviesList.innerHTML += `
-   <li class="promo__interactive-item">${iter + 1}. ${item}
-      <div class="delete"></div>
-   </li>
-   `;
-});
-*/
-/*
-//=================Рекурсия===================
-let students = {
-   js: [{
-      name: 'John',
-      progress: 100
-   }, {
-      name: 'Ivan',
-      progress: 60
-   }],
+   function showMovies(films, parent) {
+      sortArr(films);
+      parent.innerHTML = '';
+      films.forEach((item, iter) => {
+         parent.innerHTML += `
+         <li class="promo__interactive-item">${iter + 1}. ${item}
+            <div class="delete"></div>
+         </li>
+         `;
+      });
 
-   html: {
-      basic: [{
-         name: 'Peter',
-         progress: 20
-      }, {
-         name: 'Ann',
-         progress: 18
-      }],
-
-      pro: [{
-         name: 'Sam',
-         progress: 10
-      }]
+      document.querySelectorAll('.delete').forEach((btn, i) => {
+         btn.addEventListener('click', () => {
+            btn.parentElement.remove();
+            films.splice(i, 1);
+            showMovies(films, parent);
+         });
+      });
    }
-};
 
-//===========функция без рекурсии============
-function getTotalProgressByIteration(data) {
-   let total = 0;
-   let students = 0;
+   showMovies(movieDB.movies, moviesList);
 
-   for (let course of Object.values(data)) {
-      if (Array.isArray(course)) {
-         students += course.length;
-         for (let i = 0; i < course.length; i++) {
-            total += course[i].progress;
+   const addForm = document.querySelector('form.add');
+   const dataInput = addForm.querySelector('.adding__input');
+   const dataCheckBox = addForm.querySelector('[type = "checkbox"]');
+
+   addForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let dataInputValue = dataInput.value;
+      const dataCheckBoxValue = dataCheckBox.checked;
+
+      if (dataInputValue) {
+         if (dataInputValue.length > 21) {
+            dataInputValue = `${dataInputValue.substring(0, 22)}...`;
          }
-      } else {
-         for (let subCourse of Object.values(course)) {
-            students += subCourse.length;
-            for (let i = 0; i < subCourse.length; i++) {
-               total += subCourse[i].progress;
+
+         if (dataCheckBoxValue) {
+            console.log('Add in favorite');
+         }
+         movieDB.movies.push(dataInputValue);
+         showMovies(movieDB.movies, moviesList);
+         e.target.reset();
+      }
+
+   });
+
+
+   /*
+   //=================Рекурсия===================
+   let students = {
+      js: [{
+         name: 'John',
+         progress: 100
+      }, {
+         name: 'Ivan',
+         progress: 60
+      }],
+   
+      html: {
+         basic: [{
+            name: 'Peter',
+            progress: 20
+         }, {
+            name: 'Ann',
+            progress: 18
+         }],
+   
+         pro: [{
+            name: 'Sam',
+            progress: 10
+         }]
+      }
+   };
+   
+   //===========функция без рекурсии============
+   function getTotalProgressByIteration(data) {
+      let total = 0;
+      let students = 0;
+   
+      for (let course of Object.values(data)) {
+         if (Array.isArray(course)) {
+            students += course.length;
+            for (let i = 0; i < course.length; i++) {
+               total += course[i].progress;
+            }
+         } else {
+            for (let subCourse of Object.values(course)) {
+               students += subCourse.length;
+               for (let i = 0; i < subCourse.length; i++) {
+                  total += subCourse[i].progress;
+               }
             }
          }
       }
+   
+      return total / students;
    }
-
-   return total / students;
-}
-
-console.log(getTotalProgressByIteration(students));
-
-
-//===========с помощью рекурсии================
-function getTotalProgressByRecursion(data) {
-   if (Array.isArray(data)) {
-      let total = 0;
-      for (let i = 0; i < data.length; i++) {
-         total += data[i].progress;
+   
+   console.log(getTotalProgressByIteration(students));
+   
+   
+   //===========с помощью рекурсии================
+   function getTotalProgressByRecursion(data) {
+      if (Array.isArray(data)) {
+         let total = 0;
+         for (let i = 0; i < data.length; i++) {
+            total += data[i].progress;
+         }
+         return [total, data.length];
+      } else {
+         let total = [0, 0];
+         for (let subData of Object.values(data)) {
+            const subDataArr = getTotalProgressByRecursion(subData);
+            total[0] += subDataArr[0];
+            total[1] += subDataArr[1];
+         }
+         return total;
       }
-      return [total, data.length];
-   } else {
-      let total = [0, 0];
-      for (let subData of Object.values(data)) {
-         const subDataArr = getTotalProgressByRecursion(subData);
-         total[0] += subDataArr[0];
-         total[1] += subDataArr[1];
+   }
+   
+   const result = getTotalProgressByRecursion(students);
+   console.log(result[0] / result[1]);
+   */
+   /*
+   //==================Факториал======================
+   function factorial(n) {
+      if (typeof (n) !== 'number' || !Number.isInteger(n)) {
+         return 'Ошибка ввода данных';
       }
-      return total;
+   
+      if (n >= 1) {
+         return n * factorial(n - 1);
+      } else {
+         return 1;
+      }
    }
-}
-
-const result = getTotalProgressByRecursion(students);
-console.log(result[0] / result[1]);
-*/
-/*
-//==================Факториал======================
-function factorial(n) {
-   if (typeof (n) !== 'number' || !Number.isInteger(n)) {
-      return 'Ошибка ввода данных';
+   
+   //Не учитывая проверки вводимых данных
+   function factorial2(n) {
+      return n ? n * factorial2(n - 1) : 1;
    }
+   
+   console.log(factorial(5));
+   console.log(factorial2(5));
+   */
+});
 
-   if (n >= 1) {
-      return n * factorial(n - 1);
-   } else {
-      return 1;
-   }
-}
 
-//Не учитывая проверки вводимых данных
-function factorial2(n) {
-   return n ? n * factorial2(n - 1) : 1;
-}
-
-console.log(factorial(5));
-console.log(factorial2(5));
-*/
