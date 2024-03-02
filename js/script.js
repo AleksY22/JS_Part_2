@@ -10,9 +10,9 @@
 
 4) Список фильмов на странице сформировать на основании данных из этого JS файла.
 
-Отсортировать их по алфавиту 
+Отсортировать их по алфавиту
 
-5) Добавить нумерацию выведенных фильмов 
+5) Добавить нумерацию выведенных фильмов
 
 */
 
@@ -54,7 +54,7 @@ movieDB.movies.forEach((item, iter) => {
    `;
 });
 */
-
+/*
 //=================Рекурсия===================
 let students = {
    js: [{
@@ -129,3 +129,26 @@ function getTotalProgressByRecursion(data) {
 
 const result = getTotalProgressByRecursion(students);
 console.log(result[0] / result[1]);
+*/
+/*
+//==================Факториал======================
+function factorial(n) {
+   if (typeof (n) !== 'number' || !Number.isInteger(n)) {
+      return 'Ошибка ввода данных';
+   }
+
+   if (n >= 1) {
+      return n * factorial(n - 1);
+   } else {
+      return 1;
+   }
+}
+
+//Не учитывая проверки вводимых данных
+function factorial2(n) {
+   return n ? n * factorial2(n - 1) : 1;
+}
+
+console.log(factorial(5));
+console.log(factorial2(5));
+*/
